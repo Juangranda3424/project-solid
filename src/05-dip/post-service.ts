@@ -1,27 +1,13 @@
-
-/**
- * VIOLACIÓN AL PRINCIPIO DE INVERSIÓN DE DEPENDENCIAS (DIP)
- * 
- * El servicio de publicaciones depende de una implementación concreta
- * en lugar de una abstracción.
- */
-
-import { LocalDatabaseService } from '../data/local-database';
+import { DataStorage } from "./datastorage.interface";
 
 export class PostService {
 
     private posts: any[] = [];
 
-    async getPosts() {
-        /**
-         * VIOLACIÓN: Instanciación directa de una dependencia.
-         * No podemos inyectar un proveedor diferente (como JsonDatabaseService)
-         * sin modificar el constructor o este método. 
-         * El nivel superior (PostService) depende del nivel inferior (LocalDatabaseService).
-         */
-        const databaseProvider = new LocalDatabaseService();
-        this.posts = await databaseProvider.getFakePosts();
+    constructor(private datastorage: DataStorage){}
 
+    async getPosts() {
+        this.posts = await this.datastorage.getFakePosts();
         return this.posts;
     }
 
