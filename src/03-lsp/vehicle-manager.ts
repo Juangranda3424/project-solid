@@ -1,46 +1,47 @@
+export abstract class Vehicle {
+    constructor(public model: string) {}
+    abstract getDetails(): string;
+}
 
-/**
- * VIOLACIÓN AL PRINCIPIO DE SUSTITUCIÓN DE LISKOV (LSP)
- * 
- * En la flota de la reserva, intentamos manejar diversos vehículos.
- * Sin embargo, el cliente se ve obligado a conocer los detalles internos
- * de cada marca para poder operar, rompiendo la transparencia de la abstracción.
- */
+export class Tesla extends Vehicle{ 
+    getDetails(): string {
+        return `Tesla Model: ${this.model} - Carga eléctrica al 100%`;
+    }
+}
 
-export class Tesla { constructor(public model: string) {} }
-export class Audi  { constructor(public model: string) {} }
-export class Toyota{ constructor(public model: string) {} }
-export class Honda { constructor(public model: string) {} }
-export class Ford  { constructor(public model: string) {} }
+export class Audi extends Vehicle {
+    getDetails(): string {
+        return `Audi Model: ${this.model} - Tracción Quattro activada`;
+    }
+}
+
+export class Toyota extends Vehicle {
+    getDetails(): string {
+        return `Toyota Model: ${this.model} - Motor híbrido listo`;
+    }
+}
+
+export class Honda extends Vehicle {
+    getDetails(): string {
+        return `Honda Model: ${this.model} - VTEC activado`;
+    }
+}
+
+export class Ford extends Vehicle {
+    getDetails(): string {
+        return `Ford Model: ${this.model} - Built Tough`;
+    }
+}
 
 export class VehicleManager {
 
-    /**
-     * VIOLACIÓN: Este método rompe LSP y OCP. 
-     * Si agregamos una nueva marca (ej. Volvo), debemos venir aquí a agregar otro 'if' o 'case'.
-     * Además, no podemos tratar a todos los vehículos por igual.
-     */
-    static printVehicleDetails( vehicles: (Tesla | Audi | Toyota | Honda | Ford)[] ) {
-        
-        vehicles.forEach( vehicle => {
-
-            if( vehicle instanceof Tesla ) {
-                console.log('Tesla Model:', vehicle.model, 'Carga eléctrica al 100%');
-            }
-            if( vehicle instanceof Audi ) {
-                console.log('Audi Model:', vehicle.model, 'Tracción Quattro activada');
-            }
-            if( vehicle instanceof Toyota ) {
-                console.log('Toyota Model:', vehicle.model, 'Motor híbrido listo');
-            }
-            if( vehicle instanceof Honda ) {
-                console.log('Honda Model:', vehicle.model, 'VTEC activado');
-            }
-            if( vehicle instanceof Ford ) {
-                console.log('Ford Model:', vehicle.model, 'Built Tough');
-            }
-
+    // LSP: Cualquier subclase de Vehicle (Tesla, Audi, etc.) puede sustituir a la clase padre aquí sin romper nada.
+    // OCP: Está cerrado a modificación. Si agregas 20 marcas más, este código NO cambia.
+    static printVehicleDetails(vehicles: Vehicle[]) {
+        vehicles.forEach(vehicle => {
+            console.log(vehicle.getDetails());
         });
     }
 
 }
+
