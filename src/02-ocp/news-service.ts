@@ -7,26 +7,28 @@
  * tendríamos que modificar este código interno.
  */
 
-import axios from 'axios';
+import { AxiosAdapter } from "./axiosadapter";
 
-export class NewsService {
+export class NewsServiceAdp{
 
-    // VIOLACIÓN: Dependencia rígida de axios.get()
-    // Si la API cambia o queremos cambiar de cliente HTTP, este código debe "abrirse" para modificación.
+    constructor(
+        private axiosadapter: AxiosAdapter
+    ){}
+
     async getLatestNews() {
-        console.log('Obteniendo noticias de la reserva biológica...');
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        return resp.data;
+        return this.axiosadapter.get<JSON>('https://jsonplaceholder.typicode.com/posts');
     }
 
 }
 
 export class PhotosService {
 
+    constructor(
+        private axiosadapter: AxiosAdapter
+    ){}
+
     async getGallery() {
-        // Otra violación repetida: si mañana axios desaparece, tenemos que buscar todos los archivos que lo usan.
-        const resp = await axios.get('https://jsonplaceholder.typicode.com/photos');
-        return resp.data;
+        return this.axiosadapter.get<JSON>('https://jsonplaceholder.typicode.com/photos');
     }
 
 }
